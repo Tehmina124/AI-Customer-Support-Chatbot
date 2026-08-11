@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./AI-CUSTOMER-SUPPORT.png" width="100%" alt="AI Customer Support Chatbot Banner">
+  <img src="./AI CUSTOMER SUPPORT.png" width="100%" alt="AI Customer Support Chatbot Banner">
 </p>
 
 <h1 align="center">🤖 AI Customer Support Chatbot</h1>
