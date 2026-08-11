@@ -1,0 +1,162 @@
+[
+    {
+        "intent": "order_tracking",
+        "questions": [
+            "Where is my order?",
+            "How can I track my order?",
+            "Where can I track my package?",
+            "I want to track my order",
+            "What is the status of my order?",
+            "Can you tell me where my package is?"
+        ],
+        "answer": "You can track your order using the tracking link provided in your order confirmation email. If you need further help, please provide your order number."
+    },
+    {
+        "intent": "order_cancellation",
+        "questions": [
+            "How can I cancel my order?",
+            "I want to cancel my order",
+            "Can I cancel my order?",
+            "Please cancel my order",
+            "I placed an order by mistake"
+        ],
+        "answer": "You can request order cancellation before your order is shipped. Please provide your order number so we can check its status."
+    },
+    {
+        "intent": "refund",
+        "questions": [
+            "How can I get a refund?",
+            "I want a refund",
+            "Can I get my money back?",
+            "How do I request a refund?",
+            "I want to return my order and get a refund",
+            "What is your refund policy?"
+        ],
+        "answer": "You can request a refund by contacting customer support with your order number and reason for the refund. Refund processing usually depends on the payment method."
+    },
+    {
+        "intent": "return",
+        "questions": [
+            "How can I return my order?",
+            "I want to return an item",
+            "Can I return my product?",
+            "How do I return something?",
+            "What is your return policy?"
+        ],
+        "answer": "You can request a return within the allowed return period. Please provide your order number and the reason for the return."
+    },
+    {
+        "intent": "payment",
+        "questions": [
+            "What payment methods do you accept?",
+            "How can I pay for my order?",
+            "Can I pay by card?",
+            "Do you accept credit cards?",
+            "Do you accept online payments?",
+            "What payment options are available?"
+        ],
+        "answer": "We accept common payment methods such as credit cards, debit cards, and supported online payment options."
+    },
+    {
+        "intent": "payment_failed",
+        "questions": [
+            "My payment failed",
+            "Why was my payment declined?",
+            "Payment is not working",
+            "I cannot make a payment",
+            "My card payment failed",
+            "Why can't I pay?"
+        ],
+        "answer": "If your payment failed, please check your card details, available balance, and internet connection. You can also try another supported payment method."
+    },
+    {
+        "intent": "shipping",
+        "questions": [
+            "How long does shipping take?",
+            "When will my order arrive?",
+            "How many days does delivery take?",
+            "What is the delivery time?",
+            "When can I expect my package?",
+            "How long will delivery take?"
+        ],
+        "answer": "Standard shipping usually takes a few business days. Delivery time can vary depending on your location and the shipping method selected."
+    },
+    {
+        "intent": "shipping_cost",
+        "questions": [
+            "How much does shipping cost?",
+            "Is shipping free?",
+            "What are the delivery charges?",
+            "Do I have to pay for shipping?",
+            "How much is delivery?"
+        ],
+        "answer": "Shipping charges depend on your location, order size, and selected delivery method. Any applicable shipping fee will be shown during checkout."
+    },
+    {
+        "intent": "damaged_product",
+        "questions": [
+            "My product arrived damaged",
+            "I received a damaged item",
+            "The item is broken",
+            "My package was damaged",
+            "What should I do if my product is damaged?"
+        ],
+        "answer": "We're sorry that your product arrived damaged. Please contact customer support with your order number and photos of the damaged item so we can assist you."
+    },
+    {
+        "intent": "wrong_item",
+        "questions": [
+            "I received the wrong item",
+            "My order is incorrect",
+            "You sent me the wrong product",
+            "I got a different item",
+            "The product I received is not what I ordered"
+        ],
+        "answer": "We're sorry about the incorrect item. Please provide your order number and details of the product you received so we can help resolve the issue."
+    },
+    {
+        "intent": "account",
+        "questions": [
+            "How do I create an account?",
+            "I want to create an account",
+            "How can I register?",
+            "How do I sign up?",
+            "I need help with my account"
+        ],
+        "answer": "You can create an account by selecting the Sign Up or Register option and entering your required information."
+    },
+    {
+        "intent": "password",
+        "questions": [
+            "I forgot my password",
+            "How can I reset my password?",
+            "I cannot login",
+            "I forgot my account password",
+            "How do I change my password?"
+        ],
+        "answer": "You can reset your password by selecting 'Forgot Password' on the login page and following the instructions sent to your registered email."
+    },
+    {
+        "intent": "contact_support",
+        "questions": [
+            "How can I contact support?",
+            "I need customer support",
+            "How do I contact customer service?",
+            "Can I talk to a support agent?",
+            "I need help from customer service"
+        ],
+        "answer": "You can contact our customer support team through the available support channels. Please provide your order details if your question is related to an order."
+    },
+    {
+        "intent": "greeting",
+        "questions": [
+            "Hello",
+            "Hi",
+            "Hey",
+            "Good morning",
+            "Good evening",
+            "Hi there"
+        ],
+        "answer": "Hello! 👋 Welcome to customer support. How can I help you today?"
+    }
+]
