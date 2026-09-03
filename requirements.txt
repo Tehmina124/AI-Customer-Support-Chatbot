@@ -1,7 +1,4 @@
+
 streamlit
-scikit-learn
 speechrecognition
-gtts
-pandas
-numpy
-scipy
+gTTS
