@@ -1,226 +1,96 @@
-import streamlit as st
-import speech_recognition as sr
-from gtts import gTTS
-import io
+import json
 
-from chatbot import CustomerSupportChatbot
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
-# ==============================
-# PAGE CONFIGURATION
-# ==============================
+class CustomerSupportChatbot:
 
-st.set_page_config(
-    page_title="AI Customer Support Chatbot",
-    page_icon="🤖",
-    layout="centered"
-)
+    def __init__(self, faq_file="faq_data.json"):
 
+        # Load FAQ knowledge base
+        with open(faq_file, "r", encoding="utf-8") as file:
+            self.faq_data = json.load(file)
 
-# ==============================
-# TITLE
-# ==============================
+        # Prepare questions and answers
+        self.questions = []
+        self.intents = []
+        self.answers = []
 
-st.title("🤖 AI Customer Support Chatbot")
+        for item in self.faq_data:
 
-st.write(
-    "Ask me anything about orders, refunds, payments, shipping, and support."
-)
+            for question in item["questions"]:
+                self.questions.append(question)
+                self.intents.append(item["intent"])
+                self.answers.append(item["answer"])
 
-
-# ==============================
-# CREATE CHATBOT
-# ==============================
-
-if "chatbot" not in st.session_state:
-    st.session_state.chatbot = CustomerSupportChatbot()
-
-
-# ==============================
-# CONVERSATION HISTORY
-# ==============================
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-
-# ==============================
-# DISPLAY CONVERSATION
-# ==============================
-
-for message in st.session_state.messages:
-
-    with st.chat_message("user"):
-        st.write(message["user"])
-
-    with st.chat_message("assistant"):
-
-        st.write(message["bot"])
-
-        st.caption(
-            f"🎯 Intent: {message['intent']} | "
-            f"📊 Confidence: {message['confidence']}%"
+        # Create TF-IDF model
+        self.vectorizer = TfidfVectorizer(
+            lowercase=True,
+            stop_words="english"
         )
 
-        # ==============================
-        # TEXT TO SPEECH
-        # ==============================
+        # Convert FAQ questions into vectors
+        self.question_vectors = self.vectorizer.fit_transform(
+            self.questions
+        )
 
-        try:
+        # Conversation history
+        self.conversation_history = []
 
-            tts = gTTS(
-                text=message["bot"],
-                lang="en"
+    def get_response(self, user_message):
+
+        # Convert user message into vector
+        user_vector = self.vectorizer.transform(
+            [user_message]
+        )
+
+        # Calculate similarity
+        similarities = cosine_similarity(
+            user_vector,
+            self.question_vectors
+        )[0]
+
+        # Find best matching question
+        best_index = similarities.argmax()
+
+        confidence = similarities[best_index]
+
+        # Convert confidence to percentage
+        confidence_score = round(
+            confidence * 100,
+            2
+        )
+
+        # Minimum confidence threshold
+        if confidence < 0.25:
+
+            response = (
+                "I'm sorry, I don't fully understand your question. "
+                "Could you please provide more details?"
             )
 
-            audio_buffer = io.BytesIO()
+            intent = "unknown"
 
-            tts.write_to_fp(audio_buffer)
+        else:
 
-            audio_buffer.seek(0)
-
-            st.audio(
-                audio_buffer,
-                format="audio/mp3"
-            )
-
-        except Exception:
-
-            st.warning(
-                "🔊 Audio response is currently unavailable."
-            )
-
-
-# ==============================
-# TEXT INPUT
-# ==============================
-
-st.subheader("💬 Text Chat")
-
-text_input = st.text_input(
-    "Type your question here:",
-    placeholder="Example: Where is my order?"
-)
-
-send_button = st.button("Send 💬")
-
-
-# ==============================
-# PROCESS TEXT INPUT
-# ==============================
-
-if send_button and text_input:
-
-    response, intent, confidence = (
-        st.session_state.chatbot.get_response(
-            text_input
-        )
-    )
-
-    st.session_state.messages.append({
-        "user": text_input,
-        "bot": response,
-        "intent": intent,
-        "confidence": confidence
-    })
-
-    st.rerun()
-
-
-# ==============================
-# VOICE INPUT
-# ==============================
-
-st.divider()
-
-st.subheader("🎤 Voice Input")
-
-st.write(
-    "Use your microphone to ask a question by voice."
-)
-
-
-try:
-
-    audio_value = st.audio_input(
-        "Click the microphone and speak"
-    )
-
-except Exception:
-
-    audio_value = None
-
-    st.warning(
-        "🎤 Microphone is not available on this device. "
-        "Connect a microphone or headset to use voice input."
-    )
-
-
-# ==============================
-# SPEECH TO TEXT
-# ==============================
-
-if audio_value is not None:
-
-    try:
-
-        recognizer = sr.Recognizer()
-
-        # Get recorded audio
-        audio_bytes = audio_value.getvalue()
-
-        audio_file = io.BytesIO(audio_bytes)
-
-        # Read recorded audio
-        with sr.AudioFile(audio_file) as source:
-
-            audio_data = recognizer.record(source)
-
-        # Convert Speech → Text
-        user_input = recognizer.recognize_google(
-            audio_data
-        )
-
-        st.success(
-            f"📝 You said: {user_input}"
-        )
-
-        # ==============================
-        # CHATBOT RESPONSE
-        # ==============================
-
-        response, intent, confidence = (
-            st.session_state.chatbot.get_response(
-                user_input
-            )
-        )
+            response = self.answers[best_index]
+            intent = self.intents[best_index]
 
         # Save conversation
-        st.session_state.messages.append({
-            "user": user_input,
+        self.conversation_history.append({
+            "user": user_message,
             "bot": response,
             "intent": intent,
-            "confidence": confidence
+            "confidence": confidence_score
         })
 
-        st.rerun()
-
-    except sr.UnknownValueError:
-
-        st.error(
-            "❌ I could not understand your voice. "
-            "Please speak clearly and try again."
+        return (
+            response,
+            intent,
+            confidence_score
         )
 
-    except sr.RequestError:
+    def get_history(self):
 
-        st.error(
-            "❌ Speech recognition service is unavailable. "
-            "Please check your internet connection."
-        )
-
-    except Exception as e:
-
-        st.error(
-            f"❌ Voice processing error: {e}"
-        )
+        return self.conversation_history
